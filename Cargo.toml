@@ -8,3 +8,7 @@ keywords = [ "changeset" ]
 license = "MIT"
 
 [dependencies]
+
+[features]
+default = [ "std" ]
+std = []

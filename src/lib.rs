@@ -36,7 +36,7 @@
 //! }
 //!
 //! impl UserChangeSet {
-//!     #[allow(missing_docs)]
+//!     /// Some doc here
 //!     pub fn new() -> UserChangeSet {
 //!         UserChangeSet {
 //!             name: None,
@@ -55,7 +55,7 @@
 //!         self
 //!     }
 //!
-//!     #[allow(missing_docs)]
+//!     /// Some doc here
 //!     pub fn merge(&mut self, rhs: UserChangeSet) {
 //!         if let Some(name) = rhs.name {
 //!             self.name = Some(name);
@@ -64,10 +64,14 @@
 //!             self.age = Some(age);
 //!         }
 //!     }
+//!
+//!     // I may add some new functions later
 //! }
 //! ```
 //!
 //! You can also generate public struct just by adding `pub` keyword.
+
+#![cfg_attr(not(feature = "std"), no_std)]
 
 #[macro_export]
 macro_rules! changeset {
@@ -133,7 +137,7 @@ macro_rules! __changeset {
         }
 
         impl $name {
-            #[allow(missing_docs)]
+            /// Create a new changeset.
             pub fn new() -> $name {
                 $name {
                     $(
@@ -144,19 +148,29 @@ macro_rules! __changeset {
 
             $(
                 $(#[$attrf])*
-                pub fn $field(mut self, $field: $type) -> $name {
-                    self.$field = Some($field);
+                pub fn $field<T: Into<$type>>(mut self, $field: T) -> $name {
+                    self.$field = Some($field.into());
                     self
                 }
             )*
 
-            #[allow(missing_docs)]
+            /// Merge with another changeset.
             pub fn merge(&mut self, rhs: $name) {
                 $(
                     if let Some($field) = rhs.$field {
                         self.$field = Some($field);
                     }
                 )*
+            }
+
+            /// Check if there is a value that has changed.
+            pub fn has_changed(&self) -> bool {
+                $(
+                    if let Some(_) = self.$field {
+                        return true;
+                    }
+                )*
+                false
             }
         }
     }
@@ -188,5 +202,13 @@ mod tests {
         assert_eq!(a.name, Some("test".to_owned()));
         a.merge(b);
         assert_eq!(a.name, Some("success".to_owned()));
+    }
+
+    #[test]
+    fn has_changed() {
+        let mut a = PrivStruct::new();
+        assert_eq!(a.has_changed(), false);
+        a = a.name("success".to_owned());
+        assert_eq!(a.has_changed(), true);
     }
 }
