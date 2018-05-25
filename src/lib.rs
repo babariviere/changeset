@@ -1,5 +1,21 @@
 //! Library to generate a changeset.
 //!
+//! # Usage
+//!
+//! Add dependency to Cargo.toml:
+//!
+//! ```toml
+//! [dependencies]
+//! changeset = "0.1"
+//! ```
+//!
+//! And in your main.rs or lib.rs:
+//!
+//! ```ignore
+//! #[macro_use]
+//! extern crate changeset;
+//! ```
+//!
 //! # Exemple
 //!
 //! ```ignore
