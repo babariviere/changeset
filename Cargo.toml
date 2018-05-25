@@ -2,5 +2,9 @@
 name = "changeset"
 version = "0.1.0"
 authors = ["babariviere <babariviere@protonmail.com>"]
+description = "A small library to generate changeset"
+repository = "https://github.com/babariviere/changeset"
+keywords = [ "changeset" ]
+license = "MIT"
 
 [dependencies]
